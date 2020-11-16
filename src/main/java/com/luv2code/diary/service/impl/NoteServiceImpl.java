@@ -48,11 +48,12 @@ public class NoteServiceImpl implements NoteService {
         return notes;
     }
 
-//    @Override
-//    public List<Note> findAllForUser(String username) {
-//        final List<Note> notes = findAll();
-//        LOGGER.info("Searching all Notes for User with username: ´{}´", username);
-//    }
+    @Override
+    public List<Note> findAllForUser(String username) {
+        final List<Note> notes = findAll();
+        LOGGER.info("Searching all Notes for User with username: ´{}´", username);
+        return null;
+    }
 
     // TODO: lzugaj
     @Override
