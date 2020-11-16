@@ -19,17 +19,34 @@ repositories {
 }
 
 dependencies {
+  // Implementation
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   implementation 'org.springframework.boot:spring-boot-starter-web'
+
+  // Compile only
   compileOnly 'org.projectlombok:lombok'
+
+  // Development only
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+  // Runtime only
   runtimeOnly 'com.h2database:h2'
   runtimeOnly 'org.postgresql:postgresql'
+
+  // Annotation processor
   annotationProcessor 'org.projectlombok:lombok'
+
+  // Test Runtime only
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+
+  // Test Implementation
   testImplementation('org.springframework.boot:spring-boot-starter-test') {
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+
+  testImplementation 'junit:junit:4.13'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
 }
 
 test {
