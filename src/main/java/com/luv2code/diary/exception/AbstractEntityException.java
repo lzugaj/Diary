@@ -1,6 +1,6 @@
 package com.luv2code.diary.exception;
 
-public class AbstractEntityException extends RuntimeException {
+public abstract class AbstractEntityException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,7 +1,7 @@
 package com.luv2code.diary.service.impl;
 
 import com.luv2code.diary.domain.User;
-import com.luv2code.diary.exception.EntityAlreadyExistException;
+import com.luv2code.diary.exception.UsernameAlreadyExistException;
 import com.luv2code.diary.exception.EntityNotFoundException;
 import com.luv2code.diary.exception.UserNotActiveException;
 import com.luv2code.diary.repository.UserRepository;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             return newUser;
         } else {
             LOGGER.error("Username already exists for User with username: ´{}´.", user.getUsername());
-            throw new EntityAlreadyExistException("User", "username", user.getUsername());
+            throw new UsernameAlreadyExistException("User", "username", user.getUsername());
         }
     }
 

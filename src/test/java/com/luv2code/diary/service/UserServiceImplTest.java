@@ -1,7 +1,7 @@
 package com.luv2code.diary.service;
 
 import com.luv2code.diary.domain.User;
-import com.luv2code.diary.exception.EntityAlreadyExistException;
+import com.luv2code.diary.exception.UsernameAlreadyExistException;
 import com.luv2code.diary.exception.EntityNotFoundException;
 import com.luv2code.diary.exception.UserNotActiveException;
 import com.luv2code.diary.repository.UserRepository;
@@ -91,14 +91,14 @@ public class UserServiceImplTest {
     @Test
     public void should_Throw_Exception_When_Username_Already_Exists() {
         Mockito.when(userRepository.save(firstUser))
-                .thenThrow(new EntityAlreadyExistException(
+                .thenThrow(new UsernameAlreadyExistException(
                         "User",
                         "username",
                         secondUser.getUsername())
                 );
 
         final Exception exception = Assertions.assertThrows(
-                EntityAlreadyExistException.class,
+                UsernameAlreadyExistException.class,
                 () -> userService.save(firstUser)
         );
 

@@ -1,14 +1,14 @@
 package com.luv2code.diary.exception;
 
-public class EntityAlreadyExistException extends AbstractEntityException {
+public class UsernameAlreadyExistException extends AbstractEntityException {
 
     private static final long serialVersionUID = 1L;
 
-    public EntityAlreadyExistException(String entityName, String fieldName, String fieldValue) {
+    public UsernameAlreadyExistException(String entityName, String fieldName, String fieldValue) {
         this(entityName, fieldName, fieldValue, null);
     }
 
-    public EntityAlreadyExistException(String entityName, String fieldName, String fieldValue, Throwable cause) {
+    public UsernameAlreadyExistException(String entityName, String fieldName, String fieldValue, Throwable cause) {
         super(entityName, fieldName, fieldValue, createMessage(entityName, fieldName, fieldValue), cause);
     }
 

@@ -1,9 +1,9 @@
-package com.luv2code.diary.handler;
+package com.luv2code.diary.controller.handler;
 
-import com.luv2code.diary.exception.EntityAlreadyExistException;
+import com.luv2code.diary.controller.handler.response.Response;
 import com.luv2code.diary.exception.EntityNotFoundException;
-import com.luv2code.diary.exception.ResponseException;
 import com.luv2code.diary.exception.UserNotActiveException;
+import com.luv2code.diary.exception.UsernameAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,8 +28,8 @@ public class ApiExceptionHandler {
         return getModelAndView(notFound, exception, httpServletRequest);
     }
 
-    @ExceptionHandler(value = EntityAlreadyExistException.class)
-    public ModelAndView handleAlreadyExistsException(final EntityAlreadyExistException exception, final HttpServletRequest httpServletRequest) {
+    @ExceptionHandler(value = UsernameAlreadyExistException.class)
+    public ModelAndView handleAlreadyExistsException(final UsernameAlreadyExistException exception, final HttpServletRequest httpServletRequest) {
         final HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         return getModelAndView(badRequest, exception, httpServletRequest);
     }
@@ -41,7 +41,7 @@ public class ApiExceptionHandler {
     }
 
     private ModelAndView getModelAndView(final HttpStatus httpStatus, final Exception exception, final HttpServletRequest httpServletRequest) {
-        final ResponseException responseException = ResponseException.builder()
+        final Response response = Response.builder()
                 .zonedDateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .httpStatusCode(httpStatus.value())
                 .httpStatus(httpStatus)
@@ -50,11 +50,11 @@ public class ApiExceptionHandler {
                 .build();
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("timestamp", responseException.getZonedDateTime());
-        modelAndView.addObject("httpStatusCode", responseException.getHttpStatusCode());
-        modelAndView.addObject("httpStatus", responseException.getHttpStatus());
-        modelAndView.addObject("message", responseException.getMessage());
-        modelAndView.addObject("path", responseException.getPath());
+        modelAndView.addObject("timestamp", response.getZonedDateTime());
+        modelAndView.addObject("httpStatusCode", response.getHttpStatusCode());
+        modelAndView.addObject("httpStatus", response.getHttpStatus());
+        modelAndView.addObject("message", response.getMessage());
+        modelAndView.addObject("path", response.getPath());
         return modelAndView;
     }
 }
