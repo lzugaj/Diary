@@ -10,12 +10,10 @@ public interface UserService {
 
     User findById(final Long id);
 
+    User findByUsername(final String username);
+
     List<User> findAll();
 
-    List<User> findAllEnabled();
-
-    List<User> findAllDisabled();
-
-    User changeActiveState(final Long id);
+    User changeStatus(final User user);
 
 }

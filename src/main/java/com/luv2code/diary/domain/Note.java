@@ -1,15 +1,18 @@
 package com.luv2code.diary.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
-@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "NOTE")
 public class Note extends BaseEntity {
@@ -23,14 +26,15 @@ public class Note extends BaseEntity {
     @Column(name = "location")
     private String location;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "event_date")
-    private LocalDate eventDate;
+    private Date eventDate;
 
     @Column(name = "creation_date")
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     @ManyToOne
-    @JoinColumn(name = "note_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 }

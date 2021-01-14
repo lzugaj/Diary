@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <head th:fragment="head">
+            <title>My Diary</title>
+            <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/diary-logo.jpg}"  />
+            <meta charset="UTF-8"/>
+            <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+            <link th:href="@{/css/navbar.css}" rel="stylesheet" />
+            <link th:href="@{/css/index.css}" rel="stylesheet" />
+            <link th:href="@{/css/notes.css}" rel="stylesheet" />
+            <link th:href="@{/css/selected-note.css}" rel="stylesheet" />
+
+            <script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+            <script type="text/javascript" th:src="@{/js/script.js}"></script>
+        </head>
+    </body>
+</html>

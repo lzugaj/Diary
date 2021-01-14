@@ -12,6 +12,27 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+    initialization-mode: always
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    username: luka.zugaj7@gmail.com
+    password: bxdduvryhmcvhpzt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+com:
+  luv2code:
+    mail:
+      userStatusMessage:
+        enabled: 'Your account is enabled and you can use it again.'
+        disabled: 'Your account is disabled and you cannot use it until administrator change your status.'

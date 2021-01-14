@@ -1,0 +1,16 @@
+#content {
+    margin: 0 auto;
+    width: 75%;
+}
+
+a:hover {
+    text-decoration: none;
+    color: red;
+}
+
+p {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}

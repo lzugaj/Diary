@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+    <html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/head.html :: head"></head>
+    <body>
+        <div th:replace="fragments/navbar.html :: navbar">
+            Navigation
+        </div>
+        <form action="#" th:action="@{/note/submit-form}" th:object="${note}" method="post">
+            <div id="content">
+                <div class="form-group">
+                    <label for="noteTitle" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="noteTitle" name="title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="noteDescription" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-12">
+                        <textarea type="text" rows="10" class="form-control" id="noteDescription" name="description">
+                            Description
+                        </textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <label for="noteEventDate" class="col-sm-5 col-form-label">Event date</label>
+                        <div class="col-sm-12">
+                            <input type="date" class="form-control" id="noteEventDate" name="eventDate">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="noteLocation" class="col-sm-5 col-form-label">Location</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="noteLocation" name="location">
+                        </div>
+                    </div>
+                </div>
+                <div id="button-list" class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Save</button>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>

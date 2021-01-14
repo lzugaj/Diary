@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:include="fragments/head.html :: head"></head>
+    <body>
+        <div th:replace="fragments/navbar.html :: navbar">
+            Navigation
+        </div>
+        <div id="content">
+            <div class="form-row">
+                <div class="col">
+                    <label for="noteEventDate" class="col-sm-5 col-form-label">Event date</label>
+                    <div class="col-sm-12">
+                        <input type="date" class="form-control" id="noteEventDate" th:value="${#dates.format(selectedNote.eventDate, 'yyyy-MM-dd')}">
+                    </div>
+                </div>
+                <div class="col">
+                    <label for="noteLocation" class="col-sm-5 col-form-label">Location</label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" id="noteLocation" th:value="${selectedNote.location}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="noteTitle" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="noteTitle" th:value="${selectedNote.title}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="noteDescription" class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-12">
+                    <textarea th:value="${selectedNote.description}" type="text" rows="10" class="form-control" id="noteDescription" placeholder="What happened on this day?">
+                        Description
+                    </textarea>
+                </div>
+            </div>
+            <div id="button-list" class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Update</button>
+
+                <form action="#" th:action="@{/note/{id}(id=${selectedNote.id})}" th:object="${selectedNote}" method="post">
+                    <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

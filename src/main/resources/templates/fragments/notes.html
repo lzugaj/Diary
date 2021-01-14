@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="notes" th:each="note : ${notes}">
+            <div class="card">
+                <h5 th:text="${note.title}" class="card-header">Title</h5>
+                <div class="card-body">
+                    <h5 th:text="${note.description}" class="card-title">Title</h5>
+                    <div id="button-list">
+                        <div class="button-div">
+                            <form action="#" th:action="@{/note/{id}(id=${note.id})}" th:object="${note}" method="get">
+                                <button type="submit" class="btn btn-primary">More</button>
+                            </form>
+                        </div>
+                        <div class="button-div">
+                            <form action="#" th:action="@{/note/{id}(id=${note.id})}" th:object="${note}" method="post">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

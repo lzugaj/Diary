@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="navbar">
+            <nav class="navbar navbar-dark bg-dark">
+                <a class="navbar-brand" th:href="@{/home}">
+                    <img th:src="@{/images/diary-logo.jpg}" width="35" height="35" class="d-inline-block align-top" alt="My Diary">
+                    My Diary
+                </a>
+                <form class="form-inline">
+                    <a th:href="@{/note/show-form}" type="button" class="btn btn-outline-primary">Add note</a>
+                    <button type="button" class="btn btn-outline-primary">Sign In</button>
+                    <button type="button" class="btn btn-outline-primary">Sign Up</button>
+                    <button type="button" class="btn btn-outline-primary">Logout</button>
+                </form>
+            </nav>
+        </div>
+    </body>
+</html>
