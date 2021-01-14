@@ -1,5 +1,7 @@
 package com.luv2code.diary.exception;
 
+import java.util.function.Supplier;
+
 public class EntityNotFoundException extends AbstractEntityException {
 
     private static final long serialVersionUID = 1L;

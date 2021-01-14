@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "NOTE")
-public class Note extends BaseEntity {
+public class Note extends BaseEntity implements Comparable<Note> {
 
     @Column(name = "title")
     private String title;
@@ -31,10 +31,14 @@ public class Note extends BaseEntity {
     private Date eventDate;
 
     @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+    private LocalDateTime createDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Override
+    public int compareTo(Note other) {
+        return getEventDate().compareTo(other.getEventDate());
+    }
 }

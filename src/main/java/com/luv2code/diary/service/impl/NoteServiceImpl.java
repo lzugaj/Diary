@@ -3,9 +3,9 @@ package com.luv2code.diary.service.impl;
 import com.luv2code.diary.domain.Note;
 import com.luv2code.diary.domain.User;
 import com.luv2code.diary.exception.EntityNotFoundException;
+import com.luv2code.diary.exception.UserNotActiveException;
 import com.luv2code.diary.repository.NoteRepository;
 import com.luv2code.diary.service.NoteService;
-import com.luv2code.diary.service.SortService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.luv2code.diary.domain.enums.UserStatus.ACTIVE;
+
 @Service
 public class NoteServiceImpl implements NoteService {
 
@@ -24,28 +26,29 @@ public class NoteServiceImpl implements NoteService {
 
     private final NoteRepository noteRepository;
 
-    private final SortService sortService;
-
     @Autowired
-    public NoteServiceImpl(final NoteRepository noteRepository,
-                           final SortService sortService) {
+    public NoteServiceImpl(final NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
-        this.sortService = sortService;
     }
 
     @Override
     public Note save(final User user, final Note note) {
-        setupVariablesCreate(user, note);
-        LOGGER.info("Successfully setup up variables for User with username: ´{}´.", user.getUsername());
+        if (user.getStatus().equals(ACTIVE)) {
+            setupVariablesCreate(user, note);
+            LOGGER.info("Successfully setup up variables for User with username: ´{}´.", user.getUsername());
 
-        final Note newNote = noteRepository.save(note);
-        LOGGER.info("Saving new Note with id: ´{}´.", note.getId());
-        return newNote;
+            final Note newNote = noteRepository.save(note);
+            LOGGER.info("Creating Note with id: ´{}´.", note.getId());
+            return newNote;
+        } else {
+            LOGGER.error("Cannot create Note for not active User with username: ´{}´.", user.getUsername());
+            throw new UserNotActiveException("User", "username", user.getUsername());
+        }
     }
 
     private void setupVariablesCreate(final User user, final Note newNote) {
         LOGGER.info("Setting up variables for User with username: ´{}´.", user.getUsername());
-        newNote.setCreationDate(LocalDateTime.now());
+        newNote.setCreateDate(LocalDateTime.now());
         newNote.setUser(user);
         user.setNumberOfNotes(user.getNumberOfNotes() + 1);
         user.setNotes(Collections.singletonList(newNote));
@@ -67,20 +70,18 @@ public class NoteServiceImpl implements NoteService {
     public List<Note> findAll() {
         final List<Note> notes = noteRepository.findAll();
         LOGGER.info("Searching all Notes.");
+
+        Collections.sort(notes);
+        LOGGER.info("Sorting all Notes by event date.");
         return notes;
     }
 
     @Override
-    public List<Note> findAllForUser(final String username) {
+    public List<Note> findAllForUser(final User user) {
         final List<Note> notes = findAll();
-        LOGGER.info("Successfully founded all Notes.");
-
-        final List<Note> sortedNotes = sortService.sortByCreationDate(notes);
-        LOGGER.info("Successfully sorted all Notes by created date for User with username: ´{}´", username);
-
-        LOGGER.info("Searching all Notes for User with username: ´{}´.", username);
-        return sortedNotes.stream()
-                .filter(user -> user.getUser().getUsername().equals(username))
+        LOGGER.info("Searching all Notes for User with id: ´{}´.", user.getId());
+        return notes.stream()
+                .filter(sortedUser -> sortedUser.getUser().getUsername().equals(user.getUsername()))
                 .collect(Collectors.toList());
     }
 

@@ -16,4 +16,8 @@ public interface UserService {
 
     User changeStatus(final User user);
 
+    User update(final User oldUser, final User newUser);
+
+    void delete(final User user);
+
 }

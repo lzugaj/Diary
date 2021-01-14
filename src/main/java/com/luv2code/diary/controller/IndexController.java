@@ -36,7 +36,7 @@ public class IndexController {
         final User loggedInUser = userService.findByUsername("lzugaj");
         LOGGER.info("Successfully founded User with username: ´{}´.", "lzugaj");
 
-        final List<Note> userNotes = noteService.findAllForUser(loggedInUser.getUsername());
+        final List<Note> userNotes = noteService.findAllForUser(loggedInUser);
         LOGGER.info("Successfully founded all Notes for User with username: ´{}´.", loggedInUser.getUsername());
 
         final ModelAndView modelAndView = new ModelAndView("index");

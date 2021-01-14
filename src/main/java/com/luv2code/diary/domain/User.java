@@ -1,11 +1,9 @@
 package com.luv2code.diary.domain;
 
+import com.luv2code.diary.domain.enums.UserStatus;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -16,7 +14,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "USER")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Comparable<User> {
 
     @Column(name = "first_name")
     private String firstName;
@@ -36,10 +34,21 @@ public class User extends BaseEntity {
     @Column(name = "number_of_notes")
     private Integer numberOfNotes;
 
-    @Column(name = "is_active")
-    private Boolean isActive;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @OneToMany(mappedBy = "user")
     private List<Note> notes;
 
+    @Override
+    public int compareTo(User other) {
+        if (!getLastName().equals(other.getLastName())) {
+            return getLastName().compareTo(other.getLastName());
+        } else if (!getFirstName().equals(other.getFirstName())) {
+            return getFirstName().compareTo(other.getFirstName());
+        } else {
+            return getUsername().compareTo(other.getUsername());
+        }
+    }
 }

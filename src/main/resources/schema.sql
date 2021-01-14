@@ -11,7 +11,7 @@ create table "USER" (
     password varchar(20) not null,
     email varchar(100) not null,
     number_of_notes int,
-    is_active boolean,
+    status varchar(20),
     primary key (id)
 );
 

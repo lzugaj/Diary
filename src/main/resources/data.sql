@@ -1,4 +1,4 @@
-insert into "USER" values (1, 'Luka', 'Zugaj', 'lzugaj', 'password', 'luka.zugaj7@gmail.com', 'Zagreb', 'Croatia', 7, true);
+insert into "USER" values (1, 'Luka', 'Zugaj', 'lzugaj', 'password', 'luka.zugaj7@gmail.com', 7, 'ACTIVE');
 
 insert into "NOTE" values (1, 'Title 1', 'Description 1', 'Zagreb', current_date, localtime, 1);
 insert into "NOTE" values (2, 'Title 2', 'Description 2', 'Zagreb', current_date, localtime, 1);

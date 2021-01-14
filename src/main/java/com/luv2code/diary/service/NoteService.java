@@ -13,7 +13,7 @@ public interface NoteService {
 
     List<Note> findAll();
 
-    List<Note> findAllForUser(final String username);
+    List<Note> findAllForUser(final User user);
 
     Note update(final Note oldNote, final Note newNote);
 
