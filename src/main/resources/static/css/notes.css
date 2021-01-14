@@ -1,0 +1,11 @@
+.card {
+    margin: 15px 10px 0 10px;
+}
+
+#button-list {
+    margin-top: 3%;
+}
+
+.button-div {
+    display: inline-block;
+}

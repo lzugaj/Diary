@@ -1,7 +1,6 @@
 package com.luv2code.diary.domain;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,8 +8,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "USER")
 public class User extends BaseEntity {
@@ -30,12 +33,6 @@ public class User extends BaseEntity {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "city")
-    private String city;
-
-    @Column(name = "country")
-    private String country;
-
     @Column(name = "number_of_notes")
     private Integer numberOfNotes;
 
@@ -44,4 +41,5 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Note> notes;
+
 }

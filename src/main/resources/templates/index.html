@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/head.html :: head"></head>
+    <body>
+        <div th:replace="fragments/navbar.html :: navbar">
+            Navigation
+        </div>
+        <div id="content">
+            <a th:href="@{/note/show-form}">
+                <p>Add new note?</p>
+            </a>
+            <div th:replace="fragments/notes.html :: notes">
+                List of all notes
+            </div>
+        </div>
+    </body>
+</html>

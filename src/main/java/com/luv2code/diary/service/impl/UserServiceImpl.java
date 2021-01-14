@@ -1,6 +1,8 @@
 package com.luv2code.diary.service.impl;
 
 import com.luv2code.diary.domain.User;
+import com.luv2code.diary.exception.EntityAlreadyExistException;
+import com.luv2code.diary.exception.EntityNotFoundException;
 import com.luv2code.diary.repository.UserRepository;
 import com.luv2code.diary.service.UserService;
 import org.slf4j.Logger;
@@ -9,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -25,23 +27,54 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(final User user) {
-        setupVariables(user);
+        if (!isUsernameAlreadyExists(user)) {
+            setupVariables(user);
+            LOGGER.info("Successfully setup variables for User with username: ´{}´", user.getUsername());
 
-        final User newUser = userRepository.save(user);
-        LOGGER.info("Saving new User with id: ´{}´.", user.getId());
-        return newUser;
+            final User newUser = userRepository.save(user);
+            LOGGER.info("Saving new User with id: ´{}´.", user.getId());
+            return newUser;
+        } else {
+            LOGGER.error("User already exists with username: ´{}´.", user.getUsername());
+            throw new EntityAlreadyExistException("User", "username", user.getUsername());
+        }
+    }
+
+    private boolean isUsernameAlreadyExists(final User searchedUser) {
+        final List<User> users = findAll();
+        LOGGER.info("Successfully founded all Users.");
+        return users.stream()
+                .anyMatch(user -> user.getUsername().equals(searchedUser.getUsername()));
     }
 
     private void setupVariables(final User user) {
+        LOGGER.info("Setting up variables for User with username: ´{}´", user.getUsername());
         user.setNumberOfNotes(0);
         user.setIsActive(true);
     }
 
     @Override
-    public User findById(Long id) {
-        final User searchedUser = userRepository.findById(id).orElse(null);
-        LOGGER.info("Searching User with id: ´{}´.", id);
-        return searchedUser;
+    public User findById(final Long id) {
+        final Optional<User> searchedUser = userRepository.findById(id);
+        if (searchedUser.isPresent()) {
+            LOGGER.info("Searching User with id: ´{}´.", id);
+            return searchedUser.get();
+        } else {
+            LOGGER.error("User not founded with id: ´{}´.", id);
+            throw new EntityNotFoundException("User", "id", String.valueOf(id));
+        }
+    }
+
+    @Override
+    public User findByUsername(final String username) {
+        final Optional<User> searchedUser = userRepository.findByUsername(username);
+        if (searchedUser.isPresent()) {
+            LOGGER.info("Searching User with username: ´{}´.", username);
+            return searchedUser.get();
+        } else {
+            LOGGER.error("User not founded with username: ´{}´.", username);
+            throw new EntityNotFoundException("User", "username", username);
+        }
     }
 
     @Override
@@ -51,39 +84,17 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
+    // TODO: @lzugaj - Send mail notification to user when admin change active state of user(disable/enable)
     @Override
-    public List<User> findAllEnabled() {
-        final List<User> users = findAll();
-        LOGGER.info("Searching all enabled Users.");
-        return users.stream()
-                .filter(User::getIsActive)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<User> findAllDisabled() {
-        final List<User> users = findAll();
-        LOGGER.info("Searching all disabled Users.");
-        return users.stream()
-                .filter(user -> !user.getIsActive())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public User changeActiveState(final Long id) {
-        final User searchedUser = findById(id);
-        if (isActive(searchedUser)) {
-            searchedUser.setIsActive(false);
-            LOGGER.info("Disabling User with id: ´{}´.", id);
+    public User changeStatus(final User user) {
+        if (user.getIsActive()) {
+            LOGGER.info("Disabling User with id: ´{}´.", user.getId());
+            user.setIsActive(false);
         } else {
-            searchedUser.setIsActive(true);
-            LOGGER.info("Enabling User with id: ´{}´.", id);
+            LOGGER.info("Enabling User with id: ´{}´.", user.getId());
+            user.setIsActive(true);
         }
 
-        return searchedUser;
-    }
-
-    private boolean isActive(final User user) {
-        return user.getIsActive();
+        return user;
     }
 }

@@ -1,10 +1,13 @@
 package com.luv2code.diary.service;
 
 import com.luv2code.diary.domain.User;
+import com.luv2code.diary.exception.EntityAlreadyExistException;
+import com.luv2code.diary.exception.EntityNotFoundException;
 import com.luv2code.diary.repository.UserRepository;
 import com.luv2code.diary.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,11 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @SpringBootTest
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class UserServiceImplTest {
 
     @InjectMocks
@@ -32,17 +32,21 @@ public class UserServiceImplTest {
 
     private User secondUser;
 
-    @BeforeEach
+    private User thirdUser;
+
+    @Before
     public void setup() {
         firstUser = new User();
         firstUser.setId(1L);
         firstUser.setFirstName("Michael");
         firstUser.setLastName("Jordan");
-        firstUser.setUsername("theGoat23");
+        firstUser.setUsername("theGoat");
         firstUser.setPassword("5Rings");
         firstUser.setEmail("michael.jordan23@gmail.com");
         firstUser.setCity("Chicago");
         firstUser.setCountry("USA");
+        firstUser.setIsActive(true);
+        firstUser.setNumberOfNotes(0);
         firstUser.setNotes(null);
 
         secondUser = new User();
@@ -54,73 +58,102 @@ public class UserServiceImplTest {
         secondUser.setEmail("kobe.bryant248@gmail.com");
         secondUser.setCity("Los Angeles");
         secondUser.setCountry("USA");
+        secondUser.setIsActive(true);
+        secondUser.setNumberOfNotes(0);
         secondUser.setNotes(null);
 
-        List<User> users = new ArrayList<>();
+        thirdUser = new User();
+        thirdUser.setId(3L);
+        thirdUser.setFirstName("Lebron");
+        thirdUser.setLastName("James");
+        thirdUser.setUsername("theKing23");
+        thirdUser.setPassword("chosenOne");
+        thirdUser.setEmail("lebron23@gmail.com");
+        thirdUser.setCity("Cleveland");
+        thirdUser.setCountry("USA");
+        thirdUser.setIsActive(false);
+        thirdUser.setNumberOfNotes(0);
+        thirdUser.setNotes(null);
+
+        final List<User> users = new ArrayList<>();
         users.add(firstUser);
         users.add(secondUser);
 
-        Mockito.when(userRepository.save(firstUser)).thenReturn(firstUser);
+        Mockito.when(userRepository.save(thirdUser)).thenReturn(thirdUser);
         Mockito.when(userRepository.findById(secondUser.getId())).thenReturn(java.util.Optional.ofNullable(secondUser));
+        Mockito.when(userRepository.findByUsername(firstUser.getUsername())).thenReturn(java.util.Optional.ofNullable(firstUser));
         Mockito.when(userRepository.findAll()).thenReturn(users);
     }
 
     @Test
-    public void testSaveUser_ValidId_ShouldPass() {
-        final User newUser = userService.save(firstUser);
+    public void should_Save_User() {
+        final User newUser = userService.save(thirdUser);
 
-        assertNotNull(newUser);
-        assertEquals("1", newUser.getId().toString());
+        Assert.assertNotNull(newUser);
+        Assert.assertEquals("3", String.valueOf(newUser.getId()));
     }
 
     @Test
-    public void testFindUser_ValidId_ShouldPass() {
-        final User searchedUser = userService.findById(firstUser.getId());
+    public void should_Return_EntityAlreadyExist_Exception() {
+        Mockito.when(userRepository.save(secondUser))
+                .thenThrow(new EntityAlreadyExistException("User", "username", secondUser.getUsername()));
 
-        assertNotNull(searchedUser);
-        assertEquals("2", searchedUser.getId().toString());
+        Assert.assertThrows(EntityAlreadyExistException.class, () -> userService.save(secondUser));
     }
 
     @Test
-    public void testFindUser_NullId_ShouldThrowException() {
-        when(userRepository.findById(firstUser.getId())).thenThrow(new NullPointerException());
-        assertThrows(NullPointerException.class, () -> userService.findById(firstUser.getId()));
+    public void should_Return_User_When_Id_Is_Valid() {
+        final User searchedUser = userService.findById(secondUser.getId());
+
+        Assert.assertNotNull(searchedUser);
+        Assert.assertEquals("2", String.valueOf(searchedUser.getId()));
     }
 
     @Test
-    public void testFindAll_ValidSize_ShouldPass() {
+    public void should_Return_EntityNotFound_Exception_When_Id_Is_Not_Valid() {
+        Mockito.when(userRepository.findById(thirdUser.getId()))
+                .thenThrow(new EntityNotFoundException("User", "id", String.valueOf(thirdUser.getId())));
+
+        Assert.assertThrows(EntityNotFoundException.class, () -> userService.findById(firstUser.getId()));
+    }
+
+    @Test
+    public void should_Return_User_When_Username_Is_Valid() {
+        final User searchedUser = userService.findByUsername(firstUser.getUsername());
+
+        Assert.assertNotNull(searchedUser);
+        Assert.assertEquals("theGoat", searchedUser.getUsername());
+    }
+
+    @Test
+    public void should_Return_EntityNotFound_Exception_When_Username_Is_Not_Valid() {
+        Mockito.when(userRepository.findByUsername(thirdUser.getUsername()))
+                .thenThrow(new EntityNotFoundException("User", "username", thirdUser.getUsername()));
+
+        Assert.assertThrows(EntityNotFoundException.class, () -> userService.findByUsername(thirdUser.getUsername()));
+    }
+
+    @Test
+    public void should_Return_All_Users() {
         final List<User> users = userService.findAll();
 
-        assertEquals(2, users.size());
-        verify(userRepository, times(1)).findAll();
+        Assert.assertNotNull(users);
+        Assert.assertEquals(2, users.size());
     }
 
     @Test
-    public void testFindAllEnabled_ValidSize_ShouldPass() {
-        firstUser.setIsActive(false);
+    public void should_Return_Active_State_To_False() {
         secondUser.setIsActive(true);
+        final User user = userService.changeStatus(secondUser);
 
-        final List<User> users = userService.findAllEnabled();
-
-        assertEquals(1, users.size());
+        Assert.assertEquals(false, user.getIsActive());
     }
 
     @Test
-    public void testFindAllDisabled_ValidSize_ShouldPass() {
-        firstUser.setIsActive(true);
-        secondUser.setIsActive(true);
+    public void should_Return_Active_State_To_True() {
+        secondUser.setIsActive(false);
+        final User user = userService.changeStatus(secondUser);
 
-        final List<User> users = userService.findAllDisabled();
-
-        assertEquals(0, users.size());
-    }
-
-    @Test
-    public void testChangeActiveState_ValidId_ShouldPass() {
-        secondUser.setIsActive(true);
-
-        final User user = userService.changeActiveState(secondUser.getId());
-
-        assertEquals(false, user.getIsActive());
+        Assert.assertEquals(true, user.getIsActive());
     }
 }
